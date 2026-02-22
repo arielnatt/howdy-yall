@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Howdy Y'all — Newsletter Archive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #0a0e63;
+      --brand-light: #1318a8;
+      --accent: #f5c842;
+      --bg: #faf8f3;
+      --text: #1a1a2e;
+      --muted: #888;
+      --border: #e0ddd5;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--brand);
+      color: white;
+      padding: 60px 40px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(245, 200, 66, 0.12);
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 30%;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(245, 200, 66, 0.07);
+    }
+
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link svg { width: 14px; height: 14px; }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 700;
+      line-height: 1.0;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.6);
+      font-size: 16px;
+      font-weight: 300;
+      max-width: 480px;
+    }
+
+    /* ── SEARCH + COUNT ── */
+    .toolbar {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 40px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      width: 16px; height: 16px;
+    }
+
+    #search {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: white;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #search:focus { border-color: var(--brand); }
+    #search::placeholder { color: var(--muted); }
+
+    #count {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── NEWSLETTER LIST ── */
+    .list-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 40px 80px;
+    }
+
+    .newsletter-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .newsletter-item:first-child { border-top: 1px solid var(--border); }
+
+    .newsletter-item:hover .item-title {
+      color: var(--brand-light);
+    }
+
+    .newsletter-item:hover .arrow {
+      transform: translateX(4px);
+      opacity: 1;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 28px;
+      flex-shrink: 0;
+    }
+
+    .item-title {
+      font-size: 16px;
+      font-weight: 500;
+      transition: color 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .item-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .arrow {
+      width: 16px; height: 16px;
+      color: var(--brand);
+      opacity: 0.4;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-size: 15px;
+      display: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 28px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 40px 20px 36px; }
+      .toolbar, .list-wrap { padding-left: 20px; padding-right: 20px; }
+      .item-date { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="back-link" href="https://arielnatt.com" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+      arielnatt.com
+    </a>
+    <div class="eyebrow">Newsletter Archive</div>
+    <h1>Howdy Y'all</h1>
+    <p class="subtitle">Every edition, all in one place.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search newsletters…" />
+  </div>
+  <span id="count"></span>
+</div>
+
+<div class="list-wrap">
+  <div id="newsletter-list"></div>
+  <p class="empty" id="empty">No newsletters match your search.</p>
+</div>
+
+<footer>© Howdy Y'all &nbsp;·&nbsp; <a href="https://arielnatt.com" style="color:inherit;">arielnatt.com</a></footer>
+
+<script>
+  // ─────────────────────────────────────────────────────────────
+  // YOUR NEWSLETTERS — add new ones at the TOP of this list.
+  // Format: { title: "...", date: "Month D, YYYY", url: "..." }
+  // ─────────────────────────────────────────────────────────────
+  const newsletters = [
+    { title: "big weather industry plant", date: "Feb 6, 2026", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3d006675e8" },
+    { title: "career barbicide", date: "Jan 30, 2026", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=978c2a45df" },
+    { title: "bend it like beckham", date: "Jan 23, 2026", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=bcde837063" },
+    { title: "one step forward, ten years back", date: "Jan 16, 2026", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6f65dfa28b" },
+    { title: "unc actually stands for uncommunicate with your mom group", date: "Jan 9, 2026", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9e3be125e7" },
+    { title: "2025: the good, the bad, and the completely chopped", date: "Dec 19, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6ec4e0c4ef" },
+    { title: "stranger things have happened", date: "Dec 12, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=aed4f0d864" },
+    { title: "wrapped as rage bait", date: "Dec 5, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=fc3bc44d04" },
+    { title: "mixed bag", date: "Nov 21, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=1997cf40bf" },
+    { title: "WOKE IS BACK", date: "Nov 7, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=683869b5e8" },
+    { title: "spooky indeed", date: "Oct 31, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=eeef1cf8c8" },
+    { title: "heist society", date: "Oct 24, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6c7bfaa8e3" },
+    { title: "sent from heaven", date: "Sep 26, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ec5422afa7" },
+    { title: "queening out against fascism", date: "Sep 19, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=088d9d360d" },
+    { title: "chronically online (complimentary)", date: "Sep 12, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=55c906bbdb" },
+    { title: "stayin alive (derogatory)", date: "Sep 5, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=f4ed0a2071" },
+    { title: "the myth of \"consensual\" engagement", date: "Aug 29, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=68d74f6a35" },
+    { title: "the life of a showgirl under federal takeover", date: "Aug 15, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=0bc9c41d1e" },
+    { title: "from tomb to womb", date: "Jul 25, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d7b1553b1b" },
+    { title: "normalize adultery at coldplay concerts", date: "Jul 18, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d56cc797d5" },
+    { title: "delulu for labubu", date: "Jul 11, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a5afbf7e59" },
+    { title: "what's not clocking to you?", date: "Jun 20, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e2ca53b5f2" },
+    { title: "don we now our gay apparel", date: "Jun 13, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=235aeeb03f" },
+    { title: "permission to lib out?", date: "Jun 6, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=65ba312e76" },
+    { title: "bull(shit) market", date: "May 30, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d07124f323" },
+    { title: "may this love never find me", date: "May 23, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=839144a1ec" },
+    { title: "the stan to vatican pipeline", date: "May 9, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=85b738a36d" },
+    { title: "the gorilla final boss", date: "May 2, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=1dba4b3194" },
+    { title: "papicide! at the disco", date: "Apr 25, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=260efd9434" },
+    { title: "emmy-award winning (off-screen) drama", date: "Apr 11, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3660530417" },
+    { title: "your outie enjoys newsletters", date: "Mar 21, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9764825a31" },
+    { title: "traitors on the tv and in the halls of government", date: "Mar 14, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=eeea5b938c" },
+    { title: "in support of cyberbullying", date: "Mar 7, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=f4ffadc4e2" },
+    { title: "older not funnier", date: "Feb 21, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=5ebf50ed61" },
+    { title: "b mine / a minor", date: "Feb 14, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=5cd0f1c62e" },
+    { title: "pop, polycules, and the return of a vaguely catholic gaga", date: "Feb 7, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ea40abff05" },
+    { title: "putting the i in iud", date: "Jan 31, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c19b73d022" },
+    { title: "democracy fell off and took tiktok with it", date: "Jan 24, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e005c7e32f" },
+    { title: "tiktok on the clock", date: "Jan 17, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=b05eb69e4f" },
+    { title: "and the golden globe for best queen out goes to ...", date: "Jan 10, 2025", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7f7c33ea94" },
+    { title: "looking 2025 right in the eye", date: "Dec 20, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=2568b2d30c" },
+    { title: "pretty privilege in action", date: "Dec 13, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=dfbbd93e0e" },
+    { title: "pink pilates princesses stand up", date: "Dec 6, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=8a08d2c2ca" },
+    { title: "fodder for your thanksgiving table", date: "Nov 22, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c6ce8d0ea7" },
+    { title: "the People have spoken", date: "Nov 15, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=39584bb8c5" },
+    { title: "i hate gay halloween what do you mean you're timothée chalamet showing up at the timothée chalamet lookalike competition", date: "Nov 1, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=f93b69250e" },
+    { title: "this email is not from kamala harris", date: "Oct 25, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=5a76596ccd" },
+    { title: "call her madame president", date: "Oct 11, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=74092dc139" },
+    { title: "the rise and fall of a new york city mayor", date: "Sep 27, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=35f3aa8cf3" },
+    { title: "moo deng, the pygmy hippo that you are", date: "Sep 20, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d671aeb4af" },
+    { title: "concepts of a newsletter", date: "Sep 13, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e89d91c4de" },
+    { title: "bee worse", date: "Sep 6, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3d32221e7e" },
+    { title: "100!", date: "Aug 23, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e3fc7b508e" },
+    { title: "doing my big one", date: "Aug 9, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=84710bfb47" },
+    { title: "hot new bombshells enter the olympic villa", date: "Aug 2, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7db7d902ae" },
+    { title: "howdy y'all IS brat", date: "Jul 26, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3f41ed25dc" },
+    { title: "i'm sick", date: "Jul 19, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9d7832d735" },
+    { title: "its so joever", date: "Jul 12, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a20e627153" },
+    { title: "this is going to ruin the tour. the world tour.", date: "Jun 21, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=32f32feb41" },
+    { title: "i'm not gay but my fyp thinks i am", date: "Jun 14, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7a8dca957f" },
+    { title: "scenes from the (chipotle) frontlines", date: "Jun 7, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=cbe46d169a" },
+    { title: "the verdict is in ...", date: "May 31, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=b668a7b4b3" },
+    { title: "sent from the four seasons orlando", date: "May 24, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=2a5dccd27b" },
+    { title: "that katy perry met gala image isn't real", date: "May 10, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3595b20a22" },
+    { title: "drake stans down; tashi duncan stans up", date: "May 3, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=30d627dd21" },
+    { title: "marked safe from another karjenner pregnancy", date: "Apr 26, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9e7a401687" },
+    { title: "the tortured newsletter writers department", date: "Apr 19, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=fbec35c8ee" },
+    { title: "acting out (of pocket)", date: "Apr 12, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=cea2a775fa" },
+    { title: "hungry like the wolfpack", date: "Apr 5, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=2abf0a6da7" },
+    { title: "cowboy carter spotted at the hoedown throwdown", date: "Mar 29, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=30b4433654" },
+    { title: "woohoo [literal and figurative]", date: "Mar 22, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a6931be657" },
+    { title: "like many amateur newsletter writers, I do occasionally experiment with canva", date: "Mar 15, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7defede18b" },
+    { title: "a royal mess at the chocolate factory", date: "Mar 1, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=08798f1822" },
+    { title: "i'm a ceo and you're watching disney channel", date: "Feb 23, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=99d674fa8e" },
+    { title: "cowbey take me away", date: "Feb 16, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=bc48e5b282" },
+    { title: "sent while listening to fast car", date: "Feb 9, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7712ce0d36" },
+    { title: "barbicide", date: "Feb 2, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=349247a2b3" },
+    { title: "#hillarybarbie", date: "Jan 26, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ea27c8f732" },
+    { title: "the balcony seen round the world", date: "Jan 19, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=375898c34e" },
+    { title: "love in this club chalamet", date: "Jan 12, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a464bca97d" },
+    { title: "a case for heather gay", date: "Jan 5, 2024", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9bf7469264" },
+    { title: "end of the 2023 era", date: "Dec 15, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a8540158dc" },
+    { title: "divas back up", date: "Dec 8, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e799a752e3" },
+    { title: "squirles and senators and himbos, oh my!", date: "Nov 17, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=69aaed7534" },
+    { title: "halloween may be over but the horrors persist", date: "Nov 3, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=695e8b924b" },
+    { title: "the downfall of justin timberlake (britney's version)", date: "Oct 27, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=372316d320" },
+    { title: "howdy y'all hats ... no cap", date: "Oct 13, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7186236796" },
+    { title: "mccarthyism (derogatory)", date: "Oct 6, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9314f0260a" },
+    { title: "the king of memes", date: "Sep 29, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=280f65c470" },
+    { title: "certified gleek, seven days a week", date: "Sep 22, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=bd987646a4" },
+    { title: "hello to my sims", date: "Sep 15, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=132022b964" },
+    { title: "little dumpster fires everywhere", date: "Sep 8, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a10a98f2e1" },
+    { title: "for the girls and gaylors", date: "Sep 1, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ebdbf7e0b5" },
+    { title: "serving time and serving looks", date: "Aug 25, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=06176ceec0" },
+    { title: "bad week for conservatorships", date: "Aug 18, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d7cb7f4100" },
+    { title: "all the rumors are admissible in a court of law", date: "Aug 11, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d6fbb11d8b" },
+    { title: "the mojo dojo casa house subcommittee hearing on UFOs", date: "Jul 28, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=99aff99d5e" },
+    { title: "today's girl dinner menu", date: "Jul 21, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c0cfdb0ec8" },
+    { title: "in solidarity with women in unstable places", date: "Jul 14, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9b41993ec5" },
+    { title: "sheOUT", date: "Jun 30, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ce7ab11446" },
+    { title: "blink 182: 2, stepson: 0", date: "Jun 23, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=24d62d773a" },
+    { title: "wealth whi$per$", date: "Jun 16, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=602895f37f" },
+    { title: "beige-red colorblind", date: "Jun 9, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=98787d986f" },
+    { title: "pre-slaycation", date: "May 19, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ce8b75d484" },
+    { title: "rumors fly", date: "May 5, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d0d385ae9e" },
+    { title: "the royal wedding: tiktok edition", date: "Apr 28, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=50f10c3e96" },
+    { title: "rip blue checks", date: "Apr 21, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=4c4952a2c0" },
+    { title: "end of an era", date: "Apr 14, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=82cca27721" },
+    { title: "gwyenth: 1 donald: 0", date: "Mar 31, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=9323d00ddd" },
+    { title: "in my unserious era", date: "Mar 24, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=0d2713d7f9" },
+    { title: "gagged you a bit", date: "Mar 10, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=dadc105a54" },
+    { title: "keeping an eye out for selenur", date: "Mar 3, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=7ede92653a" },
+    { title: "battle of the blonds", date: "Feb 24, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=22e586f2b3" },
+    { title: "mother", date: "Feb 17, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c8800c83d8" },
+    { title: "aborgtion rights", date: "Feb 10, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a04db3c0d0" },
+    { title: "are you still watching?", date: "Feb 3, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=0b5bf128be" },
+    { title: "george santos-level delusion", date: "Jan 20, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=aa7f40e6f2" },
+    { title: "theskimm dupe", date: "Jan 13, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=30971a838d" },
+    { title: "january 6th, the sequel", date: "Jan 6, 2023", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=eeecd8dc01" },
+    { title: "pour one out for the first amendment", date: "Dec 16, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=987298ca3b" },
+    { title: "full on goblin mode", date: "Dec 9, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=989dd00d0c" },
+    { title: "the cnn to pop crave pipeline", date: "Dec 2, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=b1821a00cc" },
+    { title: "ticketmaster vs twitter: choose your fighter", date: "Nov 18, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ff7126f21c" },
+    { title: "howdy y'all (parody)", date: "Nov 11, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=4b0711399d" },
+    { title: "november surprise", date: "Nov 4, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c3b4b8899b" },
+    { title: "nightmare fuel", date: "Oct 28, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=3dfa48471d" },
+    { title: "wildeing out", date: "Oct 21, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=fb6b08433a" },
+    { title: "thumbs down", date: "Oct 14, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=51f2e316c7" },
+    { title: "divorce babe, divorce.", date: "Oct 7, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=06bbfdf710" },
+    { title: "\"it's raining\" -rihanna", date: "Sep 30, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6b8781ba73" },
+    { title: "🚩 but make it maroon", date: "Sep 23, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=dd93b51e75" },
+    { title: "your second favorite ariel", date: "Sep 16, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=e13f65eea5" },
+    { title: "be worried, darling", date: "Sep 9, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=1ccdff85f9" },
+    { title: "the midnight hour is close at hand", date: "Sep 2, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=868c645089" },
+    { title: "🎶 it has the juice 🎶", date: "Aug 26, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=d88e6eada0" },
+    { title: "a great newsletter, not just a good newsletter", date: "Aug 19, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=cd8bf89f5f" },
+    { title: "your Co2 emissions or mine?", date: "Aug 5, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=33974f3ea2" },
+    { title: "renaissance woman", date: "Jul 29, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=b0dd1c7022" },
+    { title: "it's giving 2002", date: "Jul 22, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a5f1b7af6a" },
+    { title: "and that's what you missed on glee", date: "Jul 15, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6006e9bb0b" },
+    { title: "no bond like a trauma bond", date: "Jul 8, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a11b7ac129" },
+    { title: "july fourth in its flop era", date: "Jul 1, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=a081eadc01" },
+    { title: "10/10", date: "Jun 17, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=c264c3fe25" },
+    { title: "snatched, i'm sold", date: "Jun 10, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=ed020c11b6" },
+    { title: "it's getting a bit *too* real", date: "Jun 3, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=cb6c33fde1" },
+    { title: "feeling humbled", date: "May 27, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=77f7a5d5ac" },
+    { title: "Down bad", date: "May 20, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=6ed0e6042f" },
+    { title: "It's giving California Gurlz", date: "May 13, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=670fe3cef2" },
+    { title: "What a Wednesday...", date: "May 4, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=8610775ae6" },
+    { title: "It's gonna be May!", date: "Apr 29, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=025503b9ba" },
+    { title: "Surprise.... maybe?", date: "Apr 22, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=aeae1d0730" },
+    { title: "Can we be (professional) besties?", date: "Apr 15, 2022", url: "https://us14.campaign-archive.com/?u=477fa839778ceb2e3bce2f5a4&id=812f36d032" },
+  ];
+  // ─────────────────────────────────────────────────────────────
+
+  const listEl   = document.getElementById('newsletter-list');
+  const searchEl = document.getElementById('search');
+  const countEl  = document.getElementById('count');
+  const emptyEl  = document.getElementById('empty');
+
+  function render(items) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = items.length ? 'none' : 'block';
+    countEl.textContent = `${items.length} issue${items.length !== 1 ? 's' : ''}`;
+    items.forEach((n, i) => {
+      const a = document.createElement('a');
+      a.className = 'newsletter-item';
+      a.href = n.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.style.animationDelay = `${i * 20}ms`;
+      a.innerHTML = `
+        <div class="item-left">
+          <span class="item-num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="item-title">${n.title}</span>
+        </div>
+        <div class="item-right">
+          <span class="item-date">${n.date}</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>`;
+      listEl.appendChild(a);
+    });
+  }
+
+  searchEl.addEventListener('input', () => {
+    const q = searchEl.value.toLowerCase().trim();
+    render(q ? newsletters.filter(n => n.title.toLowerCase().includes(q) || n.date.toLowerCase().includes(q)) : newsletters);
+  });
+
+  render(newsletters);
+</script>
+</body>
+</html>
